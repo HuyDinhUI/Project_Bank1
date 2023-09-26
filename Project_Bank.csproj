@@ -51,6 +51,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="codeGPT.txt" />
+    <Content Include="GPTnew.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

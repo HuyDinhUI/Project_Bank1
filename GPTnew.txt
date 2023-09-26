@@ -1,0 +1,87 @@
+﻿using System;
+using System.Threading;
+
+class TaiKhoanNganHang
+{
+    private object khoa = new object();
+    private decimal soDu;
+
+    public TaiKhoanNganHang(decimal soDuBanDau)
+    {
+        soDu = soDuBanDau;
+    }
+
+    public decimal LaySoDu()
+    {
+        return soDu;
+    }
+
+    public void NapTien(decimal soTien)
+    {
+        lock (khoa)
+        {
+            soDu += soTien;
+            Console.WriteLine($"Nạp {soTien:C}. Số dư mới: {soDu:C}");
+        }
+    }
+
+    public void RutTien(decimal soTien)
+    {
+        lock (khoa)
+        {
+            if (soDu >= soTien)
+            {
+                soDu -= soTien;
+                Console.WriteLine($"Rút {soTien:C}. Số dư mới: {soDu:C}");
+            }
+            else
+            {
+                Console.WriteLine("Không đủ tiền trong tài khoản.");
+            }
+        }
+    }
+}
+
+class ChuongTrinh
+{
+    static void Main()
+    {
+        Console.Write("Nhập tên người dùng: ");
+        string tenNguoiDung = Console.ReadLine();
+
+        Console.Write("Nhập số tiền ban đầu trong tài khoản: ");
+        decimal soDuBanDau = Convert.ToDecimal(Console.ReadLine());
+
+        TaiKhoanNganHang taiKhoan = new TaiKhoanNganHang(soDuBanDau);
+
+        Thread luongNapTien = new Thread(() =>
+        {
+            for (int i = 0; i < 5; i++)
+            {
+                Console.Write($"{tenNguoiDung}: Nạp tiền lần {i + 1}: ");
+                decimal soTien = Convert.ToDecimal(Console.ReadLine());
+                taiKhoan.NapTien(soTien);
+                Thread.Sleep(100);
+            }
+        });
+
+        Thread luongRutTien = new Thread(() =>
+        {
+            for (int i = 0; i < 5; i++)
+            {
+                Console.Write($"{tenNguoiDung}: Rút tiền lần {i + 1}: ");
+                decimal soTien = Convert.ToDecimal(Console.ReadLine());
+                taiKhoan.RutTien(soTien);
+                Thread.Sleep(100);
+            }
+        });
+
+        luongNapTien.Start();
+        luongRutTien.Start();
+
+        luongNapTien.Join();
+        luongRutTien.Join();
+
+        Console.WriteLine($"Số dư cuối cùng của {tenNguoiDung}: {taiKhoan.LaySoDu():C}");
+    }
+}
