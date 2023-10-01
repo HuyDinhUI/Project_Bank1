@@ -50,6 +50,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="banker.txt" />
     <Content Include="codeGPT.txt" />
     <Content Include="GPTnew.txt" />
   </ItemGroup>
