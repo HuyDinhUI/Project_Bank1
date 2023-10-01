@@ -1,0 +1,117 @@
+using System;
+using System.Threading;
+using System.Collections;
+
+
+namespace SessionLock
+{
+
+	
+	public class BankAccount {
+		private double _amount;
+		public Object Amount = new Object();
+
+		public void deposit(double amount) {
+			lock(Amount)
+			//lock(this)
+			{
+				_amount += amount;
+			}
+		}
+		public void withdraw(double amount) {
+			lock(Amount)
+			//lock(this)
+			{
+				_amount -= amount;
+			}
+		}
+
+		private Object balance = new Object();
+		public double Balance {
+			get {
+				lock(balance) {
+					return _amount;
+				}
+			}
+		}
+	}
+	/// <summary>
+	/// Summary description for Class1.
+	/// </summary>
+	class Class1
+	{
+		static ArrayList list = ArrayList.Synchronized(new ArrayList());
+		static BankAccount account;
+
+		static void Thread2() {
+			account.withdraw(500.00);
+			Thread.Sleep(100); // force a thread switch
+			((BankAccount)list[10]).withdraw(1000);
+		}
+
+		static void Thread1() {
+
+			// comment out the next line to remove session lock on 'account'
+			lock(account.Amount)
+			//lock(account)
+			{
+				account.deposit(1000.00);
+				Thread.Sleep(100); // force a thread switch
+				double Balance = account.Balance;
+				Console.Out.WriteLine("Balance: {0}", Balance);
+		
+				// comment out the next line to remove session lock on 'list'
+				lock(list.SyncRoot) 
+				{
+					// lock every object in the list
+					//foreach(Object obj in list)
+						//Monitor.Enter(obj);
+						//Monitor.Enter(((BankAccount)obj).Amount);
+
+					Thread.Sleep(100); // force a thread switch
+
+					double Sum = 0;
+					IEnumerator enm = list.GetEnumerator();
+					while(enm.MoveNext())
+						Sum += ((BankAccount)enm.Current).Balance;
+
+					// unlock every object in the list
+					//foreach(Object obj in list)
+						//Monitor.Exit(obj);
+						//Monitor.Exit(((BankAccount)obj).Amount);
+
+					Console.Out.WriteLine("Sum: {0}", Sum);
+				}
+			}
+		}
+
+		/// <summary>
+		/// The main entry point for the application.
+		/// </summary>
+		[STAThread]
+		static void Main(string[] args)
+		{
+			// create 20 accounts and put them into a global list
+			for(int i=0; i<20; i++)
+				list.Add( new BankAccount() );
+
+			// deposit some momey into three different accounts
+			((BankAccount)list[5]).deposit(500);
+			((BankAccount)list[10]).deposit(1000);
+			((BankAccount)list[15]).deposit(1500);
+
+			// reference one of the accounts externally
+			account = (BankAccount)list[19];
+
+			// start up two worker threads
+			Thread t1 = new Thread(new ThreadStart(Class1.Thread1));
+			Thread t2 = new Thread(new ThreadStart(Class1.Thread2));
+
+			t1.Start();
+			t2.Start();
+
+			t1.Join();
+			t2.Join();
+		}
+	}
+}
