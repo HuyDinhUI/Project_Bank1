@@ -29,7 +29,8 @@ namespace SessionLock
 		}
 
 		private Object balance = new Object();
-		public double Balance {
+		public double Balance   //Số dư
+		{
 			get {
 				lock(balance) {
 					return _amount;
