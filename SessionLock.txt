@@ -7,18 +7,20 @@ namespace SessionLock
 {
 
 	
-	public class BankAccount {
+	public class BankAccount { 
 		private double _amount;
 		public Object Amount = new Object();
 
-		public void deposit(double amount) {
+		public void deposit(double amount) //tiền gửi
+		{
 			lock(Amount)
 			//lock(this)
 			{
 				_amount += amount;
 			}
 		}
-		public void withdraw(double amount) {
+		public void withdraw(double amount)  //rút tiền
+		{
 			lock(Amount)
 			//lock(this)
 			{
