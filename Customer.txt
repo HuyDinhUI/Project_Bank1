@@ -1,0 +1,16 @@
+Họ tên KH	Số dư trong TK	   Số tiền rút
+Đinhh Thị Ngọc Trâm#10000000#5.000.000
+Trần Thụy Thanh Trúc#32.000.000#7.000.000
+Nguyễn Tấn Phát#71.000.000#32.000.000
+Đinh Văn Huy#67.000.000#23.000.000
+Nguyễn Thị Thanh Thủy#78.000.000#2.000.000
+Lê Văn Như#54.000.000#3.000.000
+Nguyễn Như Ngọc#34.000.000#4.000.000
+Trần Đức Tuấn#100000000#76000000
+Trần Thi Mỹ#20000000#1000000
+Trần Y Mỹ#34000000#34000000
+Nguyễn Thị Hồng#12000000#3000000
+Trần CHế Thi Hạnh#34000000#4000000
+Chế Thị Mỹ Phượng#56000000#4000000
+Nguyễn Thị Thúy Nga#90000000#34000000
+Nguyễn Thị Thư#19000000#2000000
