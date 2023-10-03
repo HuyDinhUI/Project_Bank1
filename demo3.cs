@@ -51,6 +51,7 @@ namespace BankerAlgorithm
                     }
                 }
             }
+            Console.ReadKey();  
         }
     }
 }
