@@ -15,16 +15,16 @@ namespace Project_Bank
             public int stt { get; set; }
             public string stk { get; set; }
             public string name { get; set; }
-            public int nap { get; set; }
-            public int rut { get; set; }
-            public int sodu { get; set; }
+            public double nap { get; set; }
+            public double rut { get; set; }
+            public double sodu { get; set; }
             public string loaithe { get; set; }
         }
         class nhapxuat
         {
             static void Main(string[] args)
             {
-                string filePath = "D:\\OneDrive - sbsdolar\\Documents\\HUFI 1 (2022-2023)\\HK3\\Hệ điều hành OS\\Code\\ConsoleApp1\\TextFile1.txt";
+                string filePath = "D:\\OneDrive - sbsdolar\\Desktop\\thongtinkhachhang.txt";
                 try
                 {
                     List<khachhang> k1 = new List<khachhang>();
@@ -37,11 +37,11 @@ namespace Project_Bank
                             khachhang k = new khachhang()
                             {
                                 stt = int.Parse(parts[0]),
-                                stk = parts[1],
-                                name = parts[2],
-                                nap = int.Parse(parts[3]),
-                                rut = int.Parse(parts[4]),
-                                sodu = int.Parse(parts[5]),
+                                name = parts[1],
+                                stk = parts[2],
+                                nap = double.Parse(parts[3]),
+                                rut = double.Parse(parts[4]),
+                                sodu = double.Parse(parts[5]),
                                 loaithe = parts[6],
                             };
                             k1.Add(k);
@@ -54,7 +54,7 @@ namespace Project_Bank
                     }
                     foreach (var k in k1)
                     {
-                        Console.WriteLine("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6} ", k.stt, k.stk, k.name, k.nap, k.rut, k.sodu, k.loaithe);
+                        Console.WriteLine("{0}\t{1}\t{2}\t\t{3}\t\t{4}\t\t\t{5}\t\t\t{6} ", k.stt, k.stk, k.name, k.nap, k.rut, k.sodu, k.loaithe);
                     }
                 }
                 catch (IOException e)
