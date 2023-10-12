@@ -16,27 +16,31 @@ class TaiKhoanNganHang
         return soDu;
     }
 
-    public void NapTien(decimal soTien)
+    public void NapTien(int i)
     {
         lock (khoa)
         {
+            Console.Write("Nap tien lan {0}: ",i + 1);
+            decimal soTien = Convert.ToDecimal(Console.ReadLine());
             soDu += soTien;
-            Console.WriteLine($"Nạp {soTien:C}. Số dư mới: {soDu:C}");
+            Console.WriteLine("Nap {0}. So du moi: {1}",soTien,soDu);
         }
     }
 
-    public void RutTien(decimal soTien)
+    public void RutTien(int i)
     {
         lock (khoa)
         {
+            Console.Write("Rut tien lan {0}: ", i+1);
+            decimal soTien = Convert.ToDecimal(Console.ReadLine());
             if (soDu >= soTien)
             {
                 soDu -= soTien;
-                Console.WriteLine($"Rút {soTien:C}. Số dư mới: {soDu:C}");
+                Console.WriteLine("Rut {0}. So du moi: {1}", soTien, soDu);
             }
             else
             {
-                Console.WriteLine("Không đủ tiền trong tài khoản.");
+                Console.WriteLine("Khong du tien trong tai khoan.");
             }
         }
     }
@@ -46,10 +50,10 @@ class ChuongTrinh
 {
     static void Main()
     {
-        Console.Write("Nhập tên người dùng: ");
+        Console.Write("Nhap ten nguoi dung: ");
         string tenNguoiDung = Console.ReadLine();
 
-        Console.Write("Nhập số tiền ban đầu trong tài khoản: ");
+        Console.Write("Nhap so tien ban dau trong tai khoan: ");
         decimal soDuBanDau = Convert.ToDecimal(Console.ReadLine());
 
         TaiKhoanNganHang taiKhoan = new TaiKhoanNganHang(soDuBanDau);
@@ -58,9 +62,7 @@ class ChuongTrinh
         {
             for (int i = 0; i < 5; i++)
             {
-                Console.Write($"{tenNguoiDung}: Nạp tiền lần {i + 1}: ");
-                decimal soTien = Convert.ToDecimal(Console.ReadLine());
-                taiKhoan.NapTien(soTien);
+                taiKhoan.NapTien(i);
                 Thread.Sleep(100);
             }
         });
@@ -69,19 +71,17 @@ class ChuongTrinh
         {
             for (int i = 0; i < 5; i++)
             {
-                Console.Write($"{tenNguoiDung}: Rút tiền lần {i + 1}: ");
-                decimal soTien = Convert.ToDecimal(Console.ReadLine());
-                taiKhoan.RutTien(soTien);
+                taiKhoan.RutTien(i);
                 Thread.Sleep(100);
             }
         });
 
         luongNapTien.Start();
         luongRutTien.Start();
-
         luongNapTien.Join();
         luongRutTien.Join();
 
-        Console.WriteLine($"Số dư cuối cùng của {tenNguoiDung}: {taiKhoan.LaySoDu():C}");
+        Console.WriteLine("So du cuoi cung cua {0}: {1}", tenNguoiDung, taiKhoan.LaySoDu());
+        Console.ReadKey();
     }
 }
