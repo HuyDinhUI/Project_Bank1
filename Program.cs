@@ -21,41 +21,27 @@ class TaiKhoanNganHang
     }
     public void NapTienSemaphore(int soTien)
     {
-        if (Balancesemaphore.WaitOne(1000))
-        {
-            Thread.Sleep(100);
-            soDu += soTien;
-            Console.WriteLine("So tien nap: {0}. So du: {1}", soTien, soDu);
-            Balancesemaphore.Release();
-        }
-        else
-        {
-            Console.WriteLine("Da qua thoi gian thuc hien");
-            Balancesemaphore.Release();
-        }
+        Balancesemaphore.WaitOne();
+        Thread.Sleep(100);
+        soDu += soTien;
+        Console.WriteLine("So tien nap: {0}. So du: {1}", soTien, soDu);
+        Balancesemaphore.Release();
     }
 
     public void RutTienSemaphore(int soTien)
     {
-        if (Balancesemaphore.WaitOne(1000))
+        Balancesemaphore.WaitOne();
+        if (soDu >= soTien)
         {
-            if (soDu >= soTien)
-            {
-                Thread.Sleep(100);
-                soDu -= soTien;
-                Console.WriteLine("So tien rut: {0}. So du: {1}", soTien, soDu);
-            }
-            else
-            {
-                Console.WriteLine($"So tien rut: {soTien}. So du khong du!");
-            }
-            Balancesemaphore.Release();
+          Thread.Sleep(100);
+          soDu -= soTien;
+          Console.WriteLine("So tien rut: {0}. So du: {1}", soTien, soDu);
         }
         else
         {
-            Console.WriteLine("Da qua thoi gian thuc hien");
-            Balancesemaphore.Release();
+          Console.WriteLine($"So tien rut: {soTien}. So du khong du!");
         }
+        Balancesemaphore.Release();
     }
     public void NapTienNoSemaphore(int soTien)
     {
