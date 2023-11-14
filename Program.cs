@@ -1,130 +1,161 @@
-﻿//// C# Program for Bankers Algorithm
-//using System;
-//using System.Collections.Generic;
+﻿using System;
+using System.Security.AccessControl;
+using System.Threading;
 
-//class GFG
-//{
-//    static int n = 5; // Number of processes
-//    static int m = 3; // Number of resources
-//    int[,] need = new int[n, m];
-//    int[,] max;
-//    int[,] alloc;
-//    int[] avail;
-//    int[] safeSequence = new int[n];
+class TaiKhoanNganHang
+{
+    private int soDu = 1000;
+    private Semaphore Balancesemaphore = new Semaphore(1, 1); // Khởi tạo Semaphore với 1 tài nguyên có sẵn
 
-//    void initializeValues()
-//    {
-//        // P0, P1, P2, P3, P4 are the Process: số lượng khách hàng
-//        // names here Allocation Matrix
-//        alloc = new int[,] {{ 0, 1, 0 }, //P0 tài nguyên cần cấp phát cho mỗi tiến trình: tương đương là số tiền khách hàng muốn rút
-//						{ 2, 0, 0 }, //P1
-//						{ 3, 0, 2 }, //P2
-//						{ 2, 1, 1 }, //P3
-//						{ 0, 0, 2 }};//P4
+    public int LaySoDu()
+    {
+        return soDu;
+    }
+    public void reset()
+    {
+        soDu = 1000;
+    }
+    public void NapTien(int soTien)
+    {
+        if (Balancesemaphore.WaitOne(1000))
+        {
+            //Thread.Sleep(2000);
+            soDu += soTien;
+            Console.WriteLine("Da nap {0}. So du: {1}", soTien, soDu);
+            Balancesemaphore.Release();
+        }
+        else
+        {
+            Console.WriteLine("Da qua thoi gian thuc hien");
+            Balancesemaphore.Release();
+        }
+    }
 
-//        // MAX Matrix
-//        max = new int[,] {{ 7, 5, 3 }, //P0  
-//						{ 3, 2, 2 }, //P1
-//					{ 9, 0, 2 }, //P2
-//					{ 2, 2, 2 }, //P3
-//					{ 4, 3, 3 }};//P4
+    public void RutTien(int soTien)
+    {
+        if (Balancesemaphore.WaitOne(1000))
+        {
+            if (soDu >= soTien)
+            {
+                soDu -= soTien;
+                Console.WriteLine("Da rut {0}. So du: {1}", soTien, soDu);
+            }
+            else
+            {
+                Console.WriteLine("So du khong du!");
+            }
+            Balancesemaphore.Release();
+        }
+        else
+        {
+            Console.WriteLine("Da qua thoi gian thuc hien");
+            Balancesemaphore.Release();
+        }
+    }
+}
 
-//        // Available Resources: tài nguyên của ngân hàng hiện có
-//        avail = new int[] { 3, 3, 2 };
-//    }
+class Program
+{
+    static void Main(string[] args)
+    {
+        int lc;
+        TaiKhoanNganHang taiKhoan = new TaiKhoanNganHang();
+        do
+        {
+            Console.WriteLine("------------MENU-----------");
+            Console.WriteLine("1. Thuc hien nap.");
+            Console.WriteLine("2. Thuc hien rut.");
+            Console.WriteLine("3. Thuc hien nap va rut.");
+            Console.WriteLine("4. Thuc hien rut cung luc.");
+            Console.WriteLine("0. Dung chuong trinh.");
+            Console.WriteLine("Nhap lua chon: ");
+            lc=int.Parse(Console.ReadLine());
+            switch (lc)
+            {
+                case 1:
+                    {
+                        Console.WriteLine("------------THUC HIEN NAP------------");
+                        taiKhoan.reset();
+                        for (int j = 0; j < 5; j++)
+                        {
+                            taiKhoan.NapTien(100);
+                        }
+                        Console.WriteLine("So du cuoi cung: " + taiKhoan.LaySoDu());
+                        Console.WriteLine("-------------------------------------\n\n");
+                        break;
+                    }
+                case 2:
+                    {
+                        Console.WriteLine("------------THUC HIEN RUT------------");
+                        taiKhoan.reset();
+                        for (int j = 0; j < 5; j++)
+                        {
+                            taiKhoan.RutTien(100);
+                        }
+                        Console.WriteLine("So du cuoi cung: " + taiKhoan.LaySoDu());
+                        Console.WriteLine("-------------------------------------\n\n");
+                        break;
+                    }
+                case 3:
+                    {
+                        Console.WriteLine("------------NAP VA RUT------------");
+                        taiKhoan.reset();
+                        Thread[] luongNapTien = new Thread[5];
+                        Thread[] luongRutTien = new Thread[5];
 
-//    void isSafe()
-//    {
-//        int count = 0;
+                        for (int i = 0; i < 5; i++)
+                        {
+                            luongNapTien[i] = new Thread(() =>
+                            {
+                                for (int j = 0; j < 5; j++)
+                                {
+                                    taiKhoan.NapTien(100);
+                                }
+                            });
 
-//        // visited array to find the
-//        // already allocated process
-//        Boolean[] visited = new Boolean[n];
-//        for (int i = 0; i < n; i++)
-//        {
-//            visited[i] = false;
-//        }
+                            luongRutTien[i] = new Thread(() =>
+                            {
+                                for (int j = 0; j < 5; j++)
+                                {
+                                    taiKhoan.RutTien(100);
+                                }
+                            });
 
-//        // work array to store the copy of
-//        // available resources
-//        int[] work = new int[m];
-//        for (int i = 0; i < m; i++)
-//        {
-//            work[i] = avail[i];
-//        }
+                            luongNapTien[i].Start();
+                            luongRutTien[i].Start();
+                        }
 
-//        while (count < n)
-//        {
-//            Boolean flag = false;
-//            for (int i = 0; i < n; i++)
-//            {
-//                if (visited[i] == false)
-//                {
-//                    int j;
-//                    for (j = 0; j < m; j++)
-//                    {
-//                        if (need[i, j] > work[j])
-//                            break;
-//                    }
-//                    if (j == m)
-//                    {
-//                        safeSequence[count++] = i;
-//                        visited[i] = true;
-//                        flag = true;
-//                        for (j = 0; j < m; j++)
-//                        {
-//                            work[j] = work[j] + alloc[i, j];
-//                        }
-//                    }
-//                }
-//            }
-//            if (flag == false)
-//            {
-//                break;
-//            }
-//        }
-//        if (count < n)
-//        {
-//            Console.WriteLine("The System is UnSafe!");
-//        }
-//        else
-//        {
-//            //System.out.println("The given System is Safe");
-//            Console.WriteLine("Following is the SAFE Sequence");
-//            for (int i = 0; i < n; i++)
-//            {
-//                Console.Write("P" + safeSequence[i]);
-//                if (i != n - 1)
-//                    Console.Write(" -> ");
-//            }
-//        }
-//    }
-
-//    void calculateNeed()
-//    {
-//        for (int i = 0; i < n; i++)
-//        {
-//            for (int j = 0; j < m; j++)
-//            {
-//                need[i, j] = max[i, j] - alloc[i, j];
-//            }
-//        }
-//    }
-
-//    // Driver Code
-//    public static void Main(String[] args)
-//    {
-//        GFG gfg = new GFG();
-
-//        gfg.initializeValues();
-
-//        // Calculate the Need Matrix
-//        gfg.calculateNeed();
-
-//        // Check whether system is in
-//        // safe state or not
-//        gfg.isSafe();
-//    }
-//}
-
-//// This code is contributed by Rajput-Ji
+                        for (int i = 0; i < 5; i++)
+                        {
+                            luongNapTien[i].Join();
+                            luongRutTien[i].Join();
+                        }
+                        Console.WriteLine("So du cuoi cung: " + taiKhoan.LaySoDu());
+                        Console.WriteLine("------------------------------------\n\n");
+                        break;
+                    }
+                case 4:
+                    {
+                        Console.WriteLine("------------RUT CUNG LUC------------");
+                        taiKhoan.reset();
+                        Thread luongRutTien1 = new Thread(() =>
+                        {
+                            taiKhoan.RutTien(900);
+                        });
+                        Thread luongRutTien2 = new Thread(() =>
+                        {
+                            taiKhoan.RutTien(200);
+                        });
+                        luongRutTien1.Start();
+                        luongRutTien2.Start();
+                        luongRutTien1.Join();
+                        luongRutTien2.Join();
+                        Console.WriteLine("So du cuoi cung: " + taiKhoan.LaySoDu());
+                        Console.WriteLine("------------------------------------\n\n");
+                        break;
+                    }
+            }
+        } while (lc!=0);
+        Console.ReadKey();
+    }
+}
