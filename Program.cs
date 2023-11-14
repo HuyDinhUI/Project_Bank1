@@ -25,7 +25,7 @@ class TaiKhoanNganHang
         {
             Thread.Sleep(100);
             soDu += soTien;
-            Console.WriteLine("Da nap {0}. So du: {1}", soTien, soDu);
+            Console.WriteLine("So tien nap: {0}. So du: {1}", soTien, soDu);
             Balancesemaphore.Release();
         }
         else
@@ -43,11 +43,11 @@ class TaiKhoanNganHang
             {
                 Thread.Sleep(100);
                 soDu -= soTien;
-                Console.WriteLine("Da rut {0}. So du: {1}", soTien, soDu);
+                Console.WriteLine("So tien rut: {0}. So du: {1}", soTien, soDu);
             }
             else
             {
-                Console.WriteLine("So du khong du!");
+                Console.WriteLine($"So tien rut: {soTien}. So du khong du!");
             }
             Balancesemaphore.Release();
         }
@@ -61,7 +61,7 @@ class TaiKhoanNganHang
     {
         Thread.Sleep(100);
         soDu += soTien;
-        Console.WriteLine($"Da nap {soTien}. So du: {soDu}");
+        Console.WriteLine($"So tien nap: {soTien}. So du: {soDu}");
     }
 
     public void RutTienNoSemaphore(int soTien)
@@ -70,11 +70,11 @@ class TaiKhoanNganHang
         {
             Thread.Sleep(100);
             soDu -= soTien;
-            Console.WriteLine($"Da rut {soTien}. So du: {soDu}");
+            Console.WriteLine($"So tien rut: {soTien}. So du: {soDu}");
         }
         else
         {
-            Console.WriteLine("So du khong du!");
+            Console.WriteLine($"So tien rut: {soTien}. So du: khong du!");
         }
     }
 }
@@ -107,11 +107,14 @@ class Program
                     {
                         Console.WriteLine("------------THUC HIEN NAP------------");
                         taiKhoan.reset();
+                        Console.WriteLine("So du ban dau: {0}\n", taiKhoan.LaySoDu());
+
                         for (int j = 0; j < 5; j++)
                         {
                             taiKhoan.NapTienSemaphore(100);
                         }
-                        Console.WriteLine("So du cuoi cung: " + taiKhoan.LaySoDu());
+
+                        Console.WriteLine("\nSo du cuoi cung: " + taiKhoan.LaySoDu());
                         Console.WriteLine("-------------------------------------\n\n");
                         break;
                     }
@@ -119,11 +122,14 @@ class Program
                     {
                         Console.WriteLine("------------THUC HIEN RUT------------");
                         taiKhoan.reset();
+                        Console.WriteLine("So du ban dau: {0}\n", taiKhoan.LaySoDu());
+
                         for (int j = 0; j < 5; j++)
                         {
                             taiKhoan.RutTienSemaphore(100);
                         }
-                        Console.WriteLine("So du cuoi cung: " + taiKhoan.LaySoDu());
+
+                        Console.WriteLine("\nSo du cuoi cung: " + taiKhoan.LaySoDu());
                         Console.WriteLine("-------------------------------------\n\n");
                         break;
                     }
@@ -131,8 +137,11 @@ class Program
                     {
                         Console.WriteLine("------------NAP VA RUT------------");
                         taiKhoan.reset();
+                        Console.WriteLine("So du ban dau: {0}\n", taiKhoan.LaySoDu());
+
                         Thread[] luongNapTien = new Thread[5];
                         Thread[] luongRutTien = new Thread[5];
+                        Console.WriteLine("So du ban dau: " + taiKhoan.LaySoDu());
 
                         for (int i = 0; i < 5; i++)
                         {
@@ -161,7 +170,8 @@ class Program
                             luongNapTien[i].Join();
                             luongRutTien[i].Join();
                         }
-                        Console.WriteLine("So du cuoi cung: " + taiKhoan.LaySoDu());
+
+                        Console.WriteLine("\nSo du cuoi cung: " + taiKhoan.LaySoDu());
                         Console.WriteLine("------------------------------------\n\n");
                         break;
                     }
@@ -169,6 +179,8 @@ class Program
                     {
                         Console.WriteLine("------------RUT CUNG LUC------------");
                         taiKhoan.reset();
+                        Console.WriteLine("So du ban dau: {0}\n", taiKhoan.LaySoDu());
+
                         Thread luongRutTien1 = new Thread(() =>
                         {
                             taiKhoan.RutTienSemaphore(900);
@@ -177,11 +189,13 @@ class Program
                         {
                             taiKhoan.RutTienSemaphore(200);
                         });
+
                         luongRutTien1.Start();
                         luongRutTien2.Start();
+
                         luongRutTien1.Join();
                         luongRutTien2.Join();
-                        Console.WriteLine("So du cuoi cung: " + taiKhoan.LaySoDu());
+                        Console.WriteLine("\nSo du cuoi cung: " + taiKhoan.LaySoDu());
                         Console.WriteLine("------------------------------------\n\n");
                         break;
                     }
@@ -189,11 +203,14 @@ class Program
                     {
                         Console.WriteLine("------------THUC HIEN NAP------------");
                         taiKhoan.reset();
+                        Console.WriteLine("So du ban dau: {0}\n", taiKhoan.LaySoDu());
+
                         for (int j = 0; j < 5; j++)
                         {
                             taiKhoan.NapTienNoSemaphore(100);
                         }
-                        Console.WriteLine("So du cuoi cung: " + taiKhoan.LaySoDu());
+
+                        Console.WriteLine("\nSo du cuoi cung: " + taiKhoan.LaySoDu());
                         Console.WriteLine("-------------------------------------\n\n");
                         break;
                     }
@@ -201,11 +218,14 @@ class Program
                     {
                         Console.WriteLine("------------THUC HIEN RUT------------");
                         taiKhoan.reset();
+                        Console.WriteLine("So du ban dau: {0}\n", taiKhoan.LaySoDu());
+
                         for (int j = 0; j < 5; j++)
                         {
                             taiKhoan.RutTienNoSemaphore(100);
                         }
-                        Console.WriteLine("So du cuoi cung: " + taiKhoan.LaySoDu());
+
+                        Console.WriteLine("\nSo du cuoi cung: " + taiKhoan.LaySoDu());
                         Console.WriteLine("-------------------------------------\n\n");
                         break;
                     }
@@ -213,6 +233,8 @@ class Program
                     {
                         Console.WriteLine("------------NAP VA RUT------------");
                         taiKhoan.reset();
+                        Console.WriteLine("So du ban dau: {0}\n",taiKhoan.LaySoDu());
+
                         Thread[] luongNapTien = new Thread[5];
                         Thread[] luongRutTien = new Thread[5];
 
@@ -243,7 +265,7 @@ class Program
                             luongNapTien[i].Join();
                             luongRutTien[i].Join();
                         }
-                        Console.WriteLine("So du cuoi cung: " + taiKhoan.LaySoDu());
+                        Console.WriteLine("\nSo du cuoi cung: " + taiKhoan.LaySoDu());
                         Console.WriteLine("------------------------------------\n\n");
                         break;
                     }
@@ -251,6 +273,8 @@ class Program
                     {
                         Console.WriteLine("------------RUT CUNG LUC------------");
                         taiKhoan.reset();
+                        Console.WriteLine("So du ban dau: {0}\n", taiKhoan.LaySoDu());
+
                         Thread luongRutTien1 = new Thread(() =>
                         {
                             taiKhoan.RutTienNoSemaphore(900);
@@ -259,11 +283,14 @@ class Program
                         {
                             taiKhoan.RutTienNoSemaphore(200);
                         });
+
                         luongRutTien1.Start();
                         luongRutTien2.Start();
+
                         luongRutTien1.Join();
                         luongRutTien2.Join();
-                        Console.WriteLine("So du cuoi cung: " + taiKhoan.LaySoDu());
+
+                        Console.WriteLine("\nSo du cuoi cung: " + taiKhoan.LaySoDu());
                         Console.WriteLine("------------------------------------\n\n");
                         break;
                     }
