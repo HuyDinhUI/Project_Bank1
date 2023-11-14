@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -22,7 +23,7 @@ class TaiKhoanNganHang
     {
         if (Balancesemaphore.WaitOne(1000))
         {
-            //Thread.Sleep(2000);
+            Thread.Sleep(100);
             soDu += soTien;
             Console.WriteLine("Da nap {0}. So du: {1}", soTien, soDu);
             Balancesemaphore.Release();
@@ -40,6 +41,7 @@ class TaiKhoanNganHang
         {
             if (soDu >= soTien)
             {
+                Thread.Sleep(100);
                 soDu -= soTien;
                 Console.WriteLine("Da rut {0}. So du: {1}", soTien, soDu);
             }
@@ -57,6 +59,7 @@ class TaiKhoanNganHang
     }
     public void NapTienNoSemaphore(int soTien)
     {
+        Thread.Sleep(100);
         soDu += soTien;
         Console.WriteLine($"Da nap {soTien}. So du: {soDu}");
     }
