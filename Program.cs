@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 class TaiKhoanNganHang
 {
     private int soDu = 1000;
-    private Semaphore Balancesemaphore = new Semaphore(1, 1); // Khởi tạo Semaphore với 1 tài nguyên có sẵn
+    private Semaphore Balancesemaphore = new Semaphore(1, 1);
 
     public int LaySoDu()
     {
